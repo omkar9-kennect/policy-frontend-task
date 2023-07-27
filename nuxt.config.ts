@@ -2,6 +2,10 @@
 import {resolve} from "path"
 import vuetify from 'vite-plugin-vuetify';
 export default defineNuxtConfig({
+  modules: [
+   
+    '@pinia/nuxt',
+  ],
   devtools: { enabled: true },
   alias:{
     "@":resolve(__dirname,'/'),

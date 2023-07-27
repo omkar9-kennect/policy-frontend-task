@@ -17,10 +17,15 @@
     "@mdi/font": "^7.2.96",
     "@mdi/js": "^7.2.96",
     "@nuxt/kit": "^3.6.2",
+    "@pinia/nuxt": "^0.4.11",
     "axios": "^1.4.0",
+    "pinia": "^2.1.4",
     "sass": "^1.63.6",
     "sass-loader": "^13.3.2",
     "vite-plugin-vuetify": "^1.0.2",
     "vuetify": "^3.3.7"
+  },
+  "overrides": {
+    "vue": "latest"
   }
 }
