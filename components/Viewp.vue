@@ -22,21 +22,22 @@
         <v-divider></v-divider>
       </v-row>
 
-      <v-row class="bg-white">
+      <v-row class="bg-white" >
         <v-col class="bg-white d-flex justify-start align-center">
           policyname
           <v-responsive max-width="50vh" max-height="10vh">
             <v-text-field
-              v-model="policyName"
-              placeholder="Enter policy name"
+            v-for="(draft, key) in draftsData" :key="key"
+              :value="draft.data.name"
               variant="outlined"
               hide-details
               density="compact"
               class="bg-white ml-4"
+              readonly
             ></v-text-field>
           </v-responsive>
         </v-col>
-        <div class="mt-6 mr-2"><Attachm /></div>
+  
       </v-row>
     </v-container>
 
@@ -44,39 +45,51 @@
       <v-navigation-drawer permanent width="280">
         <v-expansion-panels>
           <v-expansion-panel
-            v-for="(value, key) in policy"
+            v-for="(draft, key) in draftsData"
             :key="key"
             @click="togglePanel(key)"
-            v-model="selectedKey"
             class="overflow-hidden hoverable-row"
+            v-model="selectedKey"
           >
-            <v-list>
-              <span class="ml-4">{{ formatText(key) }}</span>
-              <v-icon>
-                {{
-                  selectedKey === key ? "mdi-chevron-down" : "mdi-chevron-right"
-                }}
-              </v-icon>
+            <v-list
+              v-for="(statementObj, statementKey) in draft.data.statement"
+              :key="statementKey"
+            >
+              <span class="ml-4">{{statementKey }}</span>
             </v-list>
+            <v-icon>
+              {{
+                selectedKey === key ? "mdi-chevron-down" : "mdi-chevron-right"
+              }}
+            </v-icon>
           </v-expansion-panel>
         </v-expansion-panels>
       </v-navigation-drawer>
 
       <v-main class="overflow-auto">
         <v-card class="bg-blue-grey-lighten-5" height="100vh">
-          <v-row align="center" justify="space-between">
-            <v-col cols="auto">
-              <span class="ml-7">{{ formatText(selectedKey) }}</span>
+          <v-row
+            align="center"
+            justify="space-between"
+            v-for="(draft, key) in draftsData"
+            :key="key"
+            
+          >
+            <v-col
+              cols="auto"
+              v-for="(statementObj, statementKey) in draft.data.statement"
+              :key="statementKey"
+            >
+              <span class="ml-7">{{ statementKey}}</span>
             </v-col>
-            <v-col cols="3" class="ml-7 mr-7 mb-7">
+            <v-col cols="3" class="ml-7 mr-7 mb-7" v-for="(statementObj, statementKey) in draft.data.statement"
+              :key="statementKey">
               <v-select
-                v-if="selectedKey && policy[selectedKey].accessCtrl.accessLevel"
+               
                 label="Access level"
                 variant="solo"
                 small
                 class="mt-5"
-                :items="policy[selectedKey].accessCtrl.accessLevel"
-                v-model="accessLevels[selectedKey]"
               ></v-select>
             </v-col>
           </v-row>
@@ -94,7 +107,7 @@
                   :key="key"
                 >
                   <tr class="hoverable-row">
-                    <td>{{ formatText(question) }}</td>
+                    <td>{{ question }}</td>
                     <v-switch
                       color="success"
                       value="success"
@@ -135,7 +148,7 @@
                     size="large"
                     class="bg-green ma-2"
                   >
-                    {{ formatText(suggestion) }}
+                    {{ suggestion }}
                   </v-chip>
                 </template>
               </v-chip-group>
@@ -160,7 +173,7 @@
                   :key="index"
                   class="hoverable-row"
                 >
-                  <td>{{ formatText(e.name) }}</td>
+                  <td>{{ e.name }}</td>
                   <v-switch
                     color="success"
                     value="success"
@@ -201,118 +214,35 @@
             </v-card>
           </v-card>
         </v-card>
-        <Viewp :policyds="policyds" />
       </v-main>
     </v-layout>
   </v-app>
 </template>
 <script>
-import axios from "axios";
-import policy from "../data/policy";
 import { useDraftsStore } from "../composables/store/policyStore";
-import { v4 as uuidv4 } from "uuid";
 export default {
-  props: ["closepolicyModal", "defaultTab"],
+  props: ["closeviewModal", "defaultTab","policyds"],
   data() {
     return {
-      policystore: useDraftsStore(),
-      accessLevels: {},
-      policy: policy,
-      apiData: ref([]),
-      loading: false,
-      policyName: "",
       selectedKey: "",
-      selectedKeysAndAccessBeforeSave: [],
-
+      policystore: useDraftsStore(),
     };
   },
-
-  mounted() {
-    // console.log(this.draftData);
-
-    this.fetchData();
-    console.log(this.policystore.policydata);
-    console.log(this.accessLevels);
-  },
   computed: {
-    filteredNames() {
-      if (!this.selectedKey) return []; // Return an empty array if no selected key
-      return this.apiData.filter((item) => item.resType === this.selectedKey);
+    draftsData() {
+      
+      return this.policystore.getselectedpolicydata;
     },
   },
-  methods: {
-    saveDraft() {
-      const statement = Object.fromEntries(
-        Object.entries(this.accessLevels).map(([key, value]) => {
-          return [
-            key,
-            {
-              action: `${key}:${value}`,
-              attachedOn: "2022-11-14T07:19:46.597Z",
-              itemLevel: this.policy[key].itemsList,
-              access: {
-                user_manage_manual_file_upload: true,
-              },
-              resources: {
-                consolidated_data: {
-                  name: "consolidated_data",
-                },
-              },
-            },
-          ];
-        })
-      );
-   const   policyds = {
-        type: "saveDraft",
-        data: {
-          _id: uuidv4(),
-          name: this.policyName,
-          mode: this.tab,
-          statement,
-        },
-      };
 
-      this.policystore.addPolicy(policyds);
-      console.log(
-        "policy data from modal.vue",
-        this.policystore.getselectedpolicydata
-      );
-      // Close the modal
-      this.$emit("draftSaved");
-      this.$emit("closepolicyModal");
-    },
+  methods: {
     closemodal() {
-      this.$emit("closepolicyModal");
+      this.$emit("closeviewModal");
+      
     },
-    // showAccessLevelSelect() {
-    //   useDraftsStore().updateSelectedAccessLevel(this.selectedAccessLevel);
-    // },
-    // togglePanel(panelKey) {
-    //   this.selectedKey = this.selectedKey === panelKey ? null : panelKey;
-    // },
+
     togglePanel(panelKey) {
       this.selectedKey = panelKey;
-    },
-    formatText(text) {
-      if (!text) return ""; // Return an empty string if the text is null or undefined
-      const formattedText = text.replaceAll("_", " ");
-      return formattedText.charAt(0).toUpperCase() + formattedText.slice(1);
-    },
-
-    fetchData() {
-      this.loading = true;
-      const apiUrl = "https://tempapi.proj.me/api/ZQR9vD9Rs";
-
-      axios
-        .get(apiUrl)
-        .then((response) => {
-          this.apiData = response.data;
-          this.loading = false;
-        })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
-          this.loading = false;
-        });
     },
   },
 };

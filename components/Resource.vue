@@ -1,32 +1,18 @@
 <template>
-  
-    <v-table density="compact">
-   
-    <tbody >
-      <tr>
-        <td>Consolidated data</td>
-        <v-switch color="success" value="success" hide-details></v-switch>
-      </tr>
-      <tr>
-        <td>master data</td>
-        <v-switch color="success" value="success" hide-details></v-switch>
-        
-      </tr>
-      <tr>
-        <td>core data</td>
-        <v-switch color="success" value="success" hide-details></v-switch>
-      </tr>
-      <tr>
-        <td>Trx data</td>
-        <v-switch color="success" value="success" hide-details></v-switch>
-      </tr>
-      <tr>
-        <td>Special Data</td>
-        <v-switch color="success" value="success" hide-details></v-switch>
-      </tr>
+  <v-table>
+              <tbody>
+                <tr v-for="(e, index) in filteredNames" :key="index">
+                  <td>{{ formatText(e.name) }}</td>
+                  <v-switch
+                    color="success"
+                    value="success"
+                    hide-details
+                    class="ml-n12"
+                  ></v-switch>
+                </tr>
+              </tbody>
+            </v-table>
 
-    </tbody>
-  </v-table>
 </template>
 
 <script>

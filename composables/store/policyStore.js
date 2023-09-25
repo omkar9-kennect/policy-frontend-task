@@ -1,49 +1,23 @@
-// store/drafts.js
-
+// Updated useDraftsStore
 import { defineStore } from 'pinia';
 
-export const useDraftsStore = defineStore('drafts', {
+export const useDraftsStore = defineStore({
+  id: 'actions', // Unique ID for the store
   state: () => ({
-    draftsData: [],
-  policyName:'',
-  selectedAccessLevel: '',
-  selectedKey: '',
-  }),
-  getters: {
-    getAllDrafts: (state) => state.draftsData,
-    getSelectedKey() {return this.selectedKey},
-    getAccessLevel() {return this.accessLevel},
-    getPolicyName() {
-      return this.policyName;
-    },
-  },
-  actions: {
-    addDraft(draftData) {
-      this.draftsData.push(draftData);
-      },
-      setPolicyName(newPolicyName) {
-        this.policyName = newPolicyName;
-      },
-      setSelectedKey(key) {
-        this.selectedKey = key;
-      },
-      setSelectedAccessLevel(level) {
-        this.selectedAccessLevel = level;
-      },
-  },
-})
-
-
-
-export const useAttachedManagersStore = defineStore('attachedManagers', {
-  state: () => ({
-    attachedManagers: [],
+    policydata:[],
   }),
   actions: {
-    addAttachedManager(manager) {
-      this.attachedManagers.push(manager);
+    addPolicy(policyds) {
+      // Include the selected key and access level in the data object before pushing to policydata
+    this.policydata.push(policyds);
+      // console.log("this is policy data from store",this.policydata);
+      
     },
-     
-  },
+   },
+  getters:{
+    getselectedpolicydata(state){
+      return state.policydata;
+    },
+    
+  }
 });
-

@@ -6,6 +6,13 @@ export default defineNuxtConfig({
    
     '@pinia/nuxt',
   ],
+  pinia: {
+    autoImports: [
+      // automatically imports `defineStore`
+      'defineStore', // import { defineStore } from 'pinia'
+      ['defineStore', 'definePiniaStore'], // import { defineStore as definePiniaStore } from 'pinia'
+    ],
+  },
   devtools: { enabled: true },
   alias:{
     "@":resolve(__dirname,'/'),

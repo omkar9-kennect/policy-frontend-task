@@ -3,6 +3,7 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs';
 import { VAvatar } from 'vuetify/components';
+
 // import { md1 } from 'vuetify/blueprints'
 export default defineNuxtPlugin((nuxtApp) => {
   const vuetify = createVuetify({

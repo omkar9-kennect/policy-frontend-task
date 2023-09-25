@@ -1,16 +1,17 @@
 <template>
+   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <div class="text-center">
     <v-menu v-model="menuOpen" :close-on-content-click="false">
       <template v-slot:activator="{ props: menu, on }">
         <v-btn
           v-on="on"
           prepend-icon="mdi-plus"
-          color="teal-lighten-3"
-          size="small"
+          color="rgb(150, 238, 238)"
+          size="x-small"
           @click="fetchManagers"
           v-bind="mergeProps(menu)"
-        >
-          Attach Managers
+          class="poppins-font"
+        >Attach Managers
         </v-btn>
       </template>
       <v-list v-if="menuOpen" width="450" height="400">
@@ -21,7 +22,7 @@
       variant="outlined"
       color="grey-lighten-4"
       v-model="search"
-      class="text-color-red"
+      class="text-color-red poppins-font"
     ></v-text-field>
   </v-responsive>
   <v-divider></v-divider>
@@ -31,14 +32,14 @@
       size="x-small"
       outlined
       @click="cancelAttach"
-      class="mt-8 mr-3"
+      class="mt-8 mr-3 poppins-font"
     >Cancel</v-btn>
     <v-btn
       prepend-icon="mdi-plus"
       color="teal-lighten-3"
       size="x-small"
       outlined
-      class="mt-8 mr-2"
+      class="mt-8 mr-4 poppins-font"
       @click="attachManagers"
     >Attach</v-btn>
   </v-row>
@@ -54,7 +55,7 @@
       <v-avatar :color="getColor(index)" class="ml-3 mr-3" size="small">
         {{ manager.name.charAt(0) }}
       </v-avatar>
-      <h5>{{ manager.name }}</h5>
+      {{ manager.name }}
     </div>
   </div>
 </v-list-item>
@@ -62,12 +63,15 @@
       </v-list>
     </v-menu>
   </div>
+  
 </template>
 
 <script>
+
 import { mergeProps } from "vue";
-import { useAttachedManagersStore } from '../composables/store/policyStore';
+
 export default {
+  
   data() {
     return {
       managers: [],
@@ -113,14 +117,15 @@ export default {
     },
     attachManagers() {
       // Access the store instance and dispatch the 'addAttachedManager' action to save the selected managers
-      const attachedManagersStore = useAttachedManagersStore();
+      const attachedManagersStore = useDraftsStore();
       this.selectedManagers.forEach((manager) => {
-        attachedManagersStore.addAttachedManager(manager);
+      attachedManagersStore.addAttachedManager(manager);
+        
       });
-
+      
       // Close the menu after attaching managers
       this.menuOpen = false;
-      this.selectedManagers=[]  
+     
   }
 }
 };
@@ -138,7 +143,9 @@ export default {
 .justify-space-between {
   justify-content: space-between;
 }
-
+.poppins-font {
+  font-family: 'Poppins', sans-serif;
+}
 .ml-2 {
   margin-left: 0.5rem;
 }
